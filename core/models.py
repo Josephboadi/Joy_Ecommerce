@@ -23,6 +23,34 @@ ADDRESS_CHOICES = (
     ('S', 'Shipping'),
 )
 
+class Label(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+class Carousel(models.Model):
+    title1 = models.CharField(max_length=30)
+    overview1 = models.CharField(max_length=100)
+    image1 = models.ImageField()
+    title2 = models.CharField(max_length=30)
+    overview2 = models.CharField(max_length=100)
+    image2 = models.ImageField()
+    title3 = models.CharField(max_length=30)
+    overview3 = models.CharField(max_length=100)
+    image3 = models.ImageField()
+
+
+    def __str__(self):
+        return self.title1
+
 class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -36,8 +64,11 @@ class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    # category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    categories = models.ManyToManyField(Category)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
+    label_name = models.ManyToManyField(Label)
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField()

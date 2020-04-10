@@ -1,4 +1,5 @@
 import os
+import django_heroku
 from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -92,3 +93,5 @@ LOGIN_REDIRECT_URL = '/'
 SIGNUP_REDIRECT_URL = '/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+django_heroku.settings(locals())

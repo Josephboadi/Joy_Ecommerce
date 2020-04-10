@@ -8,7 +8,7 @@ from django.views.generic import ListView, DetailView, View
 from django.shortcuts import redirect
 from django.utils import timezone
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
+from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Category, Carousel
 
 import random
 import string
@@ -27,6 +27,55 @@ def products(request):
     }
     return render(request, "products.html", context)
 
+def is_valid_queryparam(param):
+    return param !='' and param is not None
+
+def filter(request):
+    qs = Item.objects.all()
+    categories = Category.objects.all()
+    title_contains_query = request.GET.get('title_contains')
+    # id_exact_query = request.GET.get('id_exact')
+    # title_or_author_query = request.GET.get('title_or_author')
+    # view_count_min = request.GET.get('view_count_min')
+    # view_count_max = request.GET.get('view_count_max')  
+    # date_min = request.GET.get('date_min')
+    # date_max = request.GET.get('date_max')
+    category = request.GET.get('category')
+    # reviewed = request.GET.get('reviewed')
+    # not_reviewed = request.GET.get('notReviewed')
+
+    if is_valid_queryparam(title_contains_query):
+        qs = qs.filter(title__icontains=title_contains_query)
+
+    # elif is_valid_queryparam(id_exact_query):
+    #     qs = qs.filter(id=id_exact_query)
+
+    # elif is_valid_queryparam(title_or_author_query):
+    #     qs = qs.filter(Q(title__icontains=title_or_author_query) | Q(author__name__icontains=title_or_author_query)).distinct
+
+    
+    # if is_valid_queryparam(view_count_min):
+    #     qs = qs.filter(views__gte=view_count_min)         # gte(greater than or equal to >=)  gt(greater than >)
+
+    # if is_valid_queryparam(view_count_max):
+    #     qs = qs.filter(views__lt=view_count_max)         # lt(less than)
+
+    # if is_valid_queryparam(date_min):
+    #     qs = qs.filter(publish_date__gte=date_min)         
+
+    # if is_valid_queryparam(date_max):
+    #     qs = qs.filter(publish_date__lt=date_max)
+
+    if is_valid_queryparam(category) and category != "Choose...":
+        qs = qs.filter(categories__name=category)
+
+    # if reviewed == 'on':
+    #     qs = qs.filter(reviewed=True)
+
+    # elif not_reviewed == 'on':
+    #     qs = qs.filter(reviewed=False)
+    return qs
+
 
 def is_valid_form(values):
     valid = True
@@ -34,6 +83,9 @@ def is_valid_form(values):
         if field == '':
             valid = False
     return valid
+
+
+
 
 
 class CheckoutView(View):
@@ -344,10 +396,26 @@ class PaymentView(View):
         return redirect("/payment/stripe/")
 
 
+
+
 class HomeView(ListView):
     model = Item
     paginate_by = 10
     template_name = "home.html"
+
+    
+    def get_context_data(self, **kwargs):
+        item_list = Category.objects.all()
+        carousel_list = Carousel.objects.all()
+        qs = filter(self.request)
+        # most_recent = Item.objects.order_by('-timestamp')[:3]
+        context = super().get_context_data(**kwargs)
+        context['queryset'] = qs
+        context['item_list'] = item_list
+        context['carousel_list'] = carousel_list
+        # context['category_count'] = category_count
+        return context
+
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -363,9 +431,23 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return redirect("/")
 
 
+# def get_category():
+#     queryset = Item.objects.values('categories__title')
+#     return queryset
+
+
 class ItemDetailView(DetailView):
     model = Item
     template_name = "product.html"
+
+    def get_context_data(self, **kwargs):
+        # category = get_category()
+        # category = Item.objects.filter(categories)
+        most_recent = Item.objects.order_by('-timestamp')[:3]
+        context = super().get_context_data(**kwargs)
+        context['most_recent'] = most_recent
+        # context['category_count'] = category_count
+        return context
 
 
 @login_required

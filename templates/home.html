@@ -13,11 +13,12 @@
     <!--/.Indicators-->
 
     <!--Slides-->
+    {% for item in carousel_list %}
     <div class="carousel-inner" role="listbox">
 
       <!--First slide-->
       <div class="carousel-item active">
-        <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/8-col/img%282%29.jpg'); background-repeat: no-repeat; background-size: cover;">
+        <div class="view" style="background-image: url({{ item.image1.url }}); background-repeat: no-repeat; background-size: cover;">
 
           <!-- Mask & flexbox options-->
           <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
@@ -25,16 +26,16 @@
             <!-- Content -->
             <div class="text-center white-text mx-5 wow fadeIn">
               <h1 class="mb-4">
-                <strong>Joy-Ecommerce</strong>
+                <strong>{{ item.title1 }}</strong>
               </h1>
 
               <p>
-                <strong>Best ecommerce Site</strong>
+                <strong>{{ item.overview1 }}</strong>
               </p>
 
-              <p class="mb-4 d-none d-md-block">
+              {% comment %} <p class="mb-4 d-none d-md-block">
                 <strong>This links up to a webpage</strong>
-              </p>
+              </p> {% endcomment %}
 
               <a target="_blank" href="https://mdbootstrap.com/education/bootstrap/" class="btn btn-outline-white btn-lg">Add a link here
                 {% comment %} <i class="fas fa-graduation-cap ml-2"></i> {% endcomment %}
@@ -51,7 +52,7 @@
 
       <!--Second slide-->
       <div class="carousel-item">
-        <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/8-col/img%283%29.jpg'); background-repeat: no-repeat; background-size: cover;">
+        <div class="view" style="background-image: url({{ item.image2.url }}); background-repeat: no-repeat; background-size: cover;">
 
           <!-- Mask & flexbox options-->
           <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
@@ -59,16 +60,16 @@
             <!-- Content -->
             <div class="text-center white-text mx-5 wow fadeIn">
               <h1 class="mb-4">
-                <strong>Joy-Ecommerce</strong>
+                <strong>{{ item.title2 }}</strong>
               </h1>
 
               <p>
-                <strong>Get all the staff you need here</strong>
+                <strong>{{ item.overview2 }}</strong>
               </p>
 
-              <p class="mb-4 d-none d-md-block">
+              {% comment %} <p class="mb-4 d-none d-md-block">
                 <strong>This links up to a webpage</strong>
-              </p>
+              </p> {% endcomment %}
 
               <a target="_blank" href="https://mdbootstrap.com/education/bootstrap/" class="btn btn-outline-white btn-lg">Add a link here
                 {% comment %} <i class="fas fa-graduation-cap ml-2"></i> {% endcomment %}
@@ -85,7 +86,7 @@
 
       <!--Third slide-->
       <div class="carousel-item">
-        <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/8-col/img%285%29.jpg'); background-repeat: no-repeat; background-size: cover;">
+        <div class="view" style="background-image: url({{ item.image3.url }}); background-repeat: no-repeat; background-size: cover;">
 
           <!-- Mask & flexbox options-->
           <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
@@ -93,16 +94,16 @@
             <!-- Content -->
             <div class="text-center white-text mx-5 wow fadeIn">
               <h1 class="mb-4">
-                <strong>Joy-Ecommerce</strong>
+                <strong>{{ item.title3 }}</strong>
               </h1>
 
               <p>
-                <strong>Your number one (1) stop for all your online shopping needs</strong>
+                <strong>{{ item.overview3 }}</strong>
               </p>
 
-              <p class="mb-4 d-none d-md-block">
+              {% comment %} <p class="mb-4 d-none d-md-block">
                 <strong>This links up to a webpage</strong>
-              </p>
+              </p> {% endcomment %}
 
               <a target="_blank" href="https://mdbootstrap.com/education/bootstrap/" class="btn btn-outline-white btn-lg">Add a link here
                 {% comment %} <i class="fas fa-graduation-cap ml-2"></i> {% endcomment %}
@@ -118,6 +119,7 @@
       <!--/Third slide-->
 
     </div>
+    {% endfor %}
     <!--/.Slides-->
 
     <!--Controls-->
@@ -139,7 +141,7 @@
     <div class="container">
 
       <!--Navbar-->
-      <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+      {% comment %} <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
 
         <!-- Navbar brand -->
         <span class="navbar-brand">Categories:</span>
@@ -154,23 +156,14 @@
         <div class="collapse navbar-collapse" id="basicExampleNav">
 
           <!-- Links -->
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">All
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Shirts</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Sport wears</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Outwears</a>
-            </li>
-
-          </ul>
+          <select id="inputState" class="form-control mr-5" name="category">
+            <option selected>Choose...</option>
+            
+            {% for cat in object_list.categories.all %}
+            <option value="{{cat}}">{{cat}}</option>
+            {% endfor %}
+            
+          </select>
           <!-- Links -->
 
           <form class="form-inline">
@@ -181,6 +174,31 @@
         </div>
         <!-- Collapsible content -->
 
+      </nav> {% endcomment %}
+      <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+        {% comment %} <div class="form-group col-md-4"> {% endcomment %}
+        <form class="form-inline" method="GET" action=".">
+        
+        <form class="form-inline mr-5">
+          <div class="md-form my-0">
+            <input class="form-control mr-sm-4" type="text" name="title_contains" placeholder="Search" aria-label="Search">
+          </div>
+        </form>
+        <form class="form-inline form-group col-md-6" method="GET" action=".">
+        {% comment %} <span class="navbar-brand">Categories:</span> {% endcomment %}
+        <div class="form-group col-md-3">
+        <select id="inputState" class="form-control" name="category">
+          <option selected >Choose...</option>
+          {% for item in item_list %}
+          <option value="{{item}}">{{item}}</option>
+          {% endfor %}
+        </select>
+        </div>
+        <div class="form-group col-md-2">
+        <span><button type="submit" class="btn btn-primary">Search</button></span>
+        </div>
+        </form>
+        </form>
       </nav>
       <!--/.Navbar-->
 
@@ -190,7 +208,7 @@
         <!--Grid row-->
         <div class="row wow fadeIn">
 
-          {% for item in object_list %}
+          {% for item in queryset %}
           <div class="col-lg-3 col-md-6 mb-4">
 
             <!--Card-->
@@ -209,13 +227,17 @@
               <!--Card content-->
               <div class="card-body text-center">
                 <!--Category & Title-->
+                {% for cat in item.categories.all %}
                 <a href="" class="grey-text">
-                  <h5>{{ item.get_category_display }}</h5>
+                  <h5>{{ cat }}</h5>
                 </a>
+                {% endfor %}
                 <h5>
                   <strong>
                     <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title}}
-                      <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
+                      {% for lab in item.label_name.all %}
+                      <span class="badge badge-pill {{ item.get_label_display }}-color">{{lab}}</span>
+                      {% endfor %}
                     </a>
                   </strong>
                 </h5>
